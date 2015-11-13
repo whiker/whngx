@@ -6,6 +6,11 @@
 #include <ngx_http.h>
 #include <nginx.h>
 
+/* 配置文件
+location = /calc { calc; }
+location = /calc_ret { calc; }
+*/
+
 // 常量
 const char* HttpRetStr_BadRequest = "Bad Request";
 const char* HttpRetStr_InternalError = "Internal Error";
@@ -19,19 +24,12 @@ struct wh_kvbuf_s {
 };
 
 // 函数声明
-static char*
-	ngx_http_calc_set_conf(ngx_conf_t*, ngx_command_t*, void*);
-static ngx_int_t
-	ngx_http_calc_handler(ngx_http_request_t* req);
-ngx_int_t
-	whSendfile(ngx_http_request_t* req);
-void
-	whRequestBodyHandler(ngx_http_request_t* req);
-int
-	whParseRequestBodyV1(ngx_http_request_t* req,
-						 wh_kvbuf_t** ret);
-int
-	whGetValueStrV1(wh_kvbuf_t* kv, u_char* const str, int n_str);
+static char* ngx_http_calc_set_conf(ngx_conf_t*, ngx_command_t*, void*);
+static ngx_int_t ngx_http_calc_handler(ngx_http_request_t* req);
+ngx_int_t whSendfile(ngx_http_request_t* req);
+void whRequestBodyHandler(ngx_http_request_t* req);
+int whParseRequestBodyV1(ngx_http_request_t* req, wh_kvbuf_t** ret);
+int whGetValueStrV1(wh_kvbuf_t* kv, u_char* const str, int n_str);
 
 // 函数和宏
 ngx_int_t whSendMessage(ngx_int_t status, const char* msg,
