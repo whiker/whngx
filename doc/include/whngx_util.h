@@ -13,6 +13,9 @@
 
 namespace whngx {
 
+#define SEND_JMSG_RETURN(STATUS, MSG) \
+	{ send_jmsg(req, STATUS, MSG); return; }
+
 #define JSON_TYPE_STR 1
 
 #define JSON_CHECK(ITEMS) \

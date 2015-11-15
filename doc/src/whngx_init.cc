@@ -9,12 +9,19 @@ vector<JcheckPair> loginreq_params;
 vector<JcheckPair> login_params;
 
 
+extern int whdoc::init_db_mysql();
+
 static void init_json_check_params();
 
 
 ngx_int_t whngx_doc_init_process(ngx_cycle_t *cycle)
 {
 	init_json_check_params();
+	
+	// 连接数据库
+	if ( whdoc::init_db_mysql() < 0 )
+		return NGX_ERROR;
+	
 	return NGX_OK;
 }
 

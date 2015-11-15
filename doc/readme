@@ -2,14 +2,16 @@
 ngx_http_doc_module.cc {
 	
 	// whngx_doc_init_process, worker进程启动时初始化全局变量
-	whngx_init.cc
+	whngx_init.cc {
+		db_mysql.cc     // 连接MySQL
+	}
 	
 	// ngx_http_doc_handler, HTTP模块处理函数
 	whngx_handler.cc {
 		whdoc_action.h  // Action处理函数的声明
-		regist.cc		// 注册
-		loginreq.cc		// 登录请求
-		login.cc		// 登录
+		regist.cc       // 注册
+		loginreq.cc     // 登录请求
+		login.cc        // 登录
 	}
 }
 

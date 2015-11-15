@@ -16,10 +16,7 @@ void loginreq(ngx_http_request_t *req, Document &doc)
 	JSON_CHECK(loginreq);
 	
 	if ( is_username_error(doc["username"]) )
-	{
-		send_jmsg(req, 400, "username format error");
-		return;
-	}
+		SEND_JMSG_RETURN(400, "username format error")
 }
 
 
