@@ -1,0 +1,29 @@
+// nginx.conf
+		location = /doc/regist {
+			doc;
+			limit_except POST {
+				deny all;
+			}
+			client_max_body_size 1k;
+		}
+		
+		location = /doc/loginreq {
+			doc;
+			limit_except POST {
+				deny all;
+			}
+			client_max_body_size 1k;
+		}
+		
+		location = /doc/login {
+			doc;
+			limit_except POST {
+				deny all;
+			}
+			client_max_body_size 1k;
+		}
+
+
+// Makefile
+CXX = g++ -Iwhngx/doc/ext -Iwhngx/doc/include
+LINK =	$(CXX)
