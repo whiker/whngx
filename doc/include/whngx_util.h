@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include <uuid/uuid.h>
+
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 
@@ -12,6 +14,10 @@
 
 
 namespace whngx {
+
+
+#define UUID_STR(STR) \
+	{ uuid_t uuid; uuid_generate(uuid); uuid_unparse(uuid, STR); }
 
 #define SEND_JMSG_RETURN(STATUS, MSG) \
 	{ send_jmsg(req, STATUS, MSG); return; }

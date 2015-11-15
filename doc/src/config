@@ -1,10 +1,12 @@
 ngx_addon_name=ngx_http_doc_module
 HTTP_MODULES="$HTTP_MODULES ngx_http_doc_module"
-NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_doc_module.cc \
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS \
+				$ngx_addon_dir/ngx_http_doc_module.cc \
 				$ngx_addon_dir/whngx_init.cc \
 				$ngx_addon_dir/db_mysql.cc \
 				$ngx_addon_dir/whngx_handler.cc \
 				$ngx_addon_dir/whngx_util.cc \
+				$ngx_addon_dir/tea_encrypt.cc \
 				$ngx_addon_dir/whdoc_util.cc \
 				$ngx_addon_dir/regist.cc \
 				$ngx_addon_dir/loginreq.cc \

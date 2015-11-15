@@ -15,6 +15,7 @@ ngx_http_doc_module.cc {
 	}
 }
 
+
 // 配置文件
 		location = /doc/regist {
 			doc;
@@ -41,6 +42,13 @@ ngx_http_doc_module.cc {
 		}
 
 
-// Makefile
+// 构建和安装
+sudo apt-get install mysql-server
+sudo apt-get install mysql-client
+sudo apt-get install libmysqlclient-dev
+sudo apt-get install uuid-dev
+
+./configure --add-module=whngx/doc/src
+
 CXX = g++ -Iwhngx/doc/ext -Iwhngx/doc/include
-LINK =	$(CXX)
+LINK =	$(CXX)  // 加-lmysqlclient -luuid

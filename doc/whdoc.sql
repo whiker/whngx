@@ -3,14 +3,14 @@
 
 create table loginreq (
 	username  varchar(8) NOT NULL,
-	cxx       varchar(128),
-	ixx       varchar(128),
-	cuu       varchar(128),
+	cxx       char(36),
+	ixx       char(36),
+	cuu       char(36),
 	primary key (username)
 ) default charset=latin1;
 
 create table login (
-	iuu  varchar(128) NOT NULL,
+	iuu  char(36) NOT NULL,
 	uid  int NOT NULL AUTO_INCREMENT,
 	primary key (iuu),
 	key (uid)
