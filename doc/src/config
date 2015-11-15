@@ -4,6 +4,7 @@ NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/ngx_http_doc_module.cc \
 				$ngx_addon_dir/whngx_init.cc \
 				$ngx_addon_dir/whngx_handler.cc \
 				$ngx_addon_dir/whngx_util.cc \
+				$ngx_addon_dir/whdoc_util.cc \
 				$ngx_addon_dir/regist.cc \
 				$ngx_addon_dir/loginreq.cc \
 				$ngx_addon_dir/login.cc"

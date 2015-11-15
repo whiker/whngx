@@ -4,14 +4,12 @@
 #include "rapidjson/writer.h"
 
 #include "whngx_util.h"
+#include "whdoc_action.h"
 
 using namespace rapidjson;
 using namespace whngx;
+using namespace whdoc;
 
-
-extern ngx_int_t regist(ngx_http_request_t *req, Document &doc);
-extern ngx_int_t loginreq(ngx_http_request_t *req, Document &doc);
-extern ngx_int_t login(ngx_http_request_t *req, Document &doc);
 
 static void wh_handle_body(ngx_http_request_t *req);
 
@@ -48,6 +46,7 @@ void wh_handle_body(ngx_http_request_t *req)
 		return;
 	}
 	
+	// 调用 Action 处理函数
 	if ( ngx_strncmp(req->uri.data, "/doc/regist", req->uri.len) == 0 )
 		regist(req, doc);
 	else if ( ngx_strncmp(req->uri.data, "/doc/loginreq", req->uri.len) == 0 )
