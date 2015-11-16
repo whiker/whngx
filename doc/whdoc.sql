@@ -10,8 +10,9 @@ create table loginreq (
 ) default charset=latin1;
 
 create table login (
-	iuu  char(36) NOT NULL,
-	uid  int NOT NULL AUTO_INCREMENT,
+	iuu   char(36) NOT NULL,
+	uid   int NOT NULL AUTO_INCREMENT,
+	code  char(8),
 	primary key (iuu),
 	key (uid)
 ) default charset=latin1;

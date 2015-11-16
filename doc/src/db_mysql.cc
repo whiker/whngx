@@ -4,6 +4,7 @@ namespace whdoc {
 
 
 MYSQL *mys_conn = NULL;
+char sql_str[1024];
 
 
 int init_db_mysql()

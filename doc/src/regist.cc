@@ -1,10 +1,10 @@
 #include <ctype.h>
-#include <stdio.h>
 #include <uuid/uuid.h>
 
 #include "whngx_util.h"
 #include "global.h"
 #include "whdoc_util.h"
+#include "db_mysql.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -14,13 +14,12 @@ using namespace whngx;
 namespace whdoc {
 
 
-char regist_sql[256];
-char cuu[37], iuu[37];
-char cxx[37], ixx[37];
+char cuu[UUID_LEN+1],     iuu[UUID_LEN+1];
+char cxx[UUID_XXX_LEN+1], ixx[UUID_XXX_LEN+1];
 
 
 bool is_password_error(const string &password);
-void generate_uuid_xx(char *plain, char *cipher, const void *key);
+void generate_uuid_xxx(char *plain, char *cipher, const void *key);
 
 
 // ACTION
@@ -36,47 +35,42 @@ void regist(ngx_http_request_t *req, Document &doc)
 		SEND_JMSG_RETURN(400, "password format error")
 	
 	// 判断是否已注册过
-	sprintf(regist_sql,
-		"select username from loginreq where username=('%s');",
+	SQL("select username from loginreq where username=('%s');",
 		username.c_str());
-	mysql_query(mys_conn, regist_sql);
-	MYSQL_RES *res = mysql_store_result(conn);
+	MYS_QUERY;
+	MYSQL_RES *res = MYS_RESULT;
 	if (res->row_count > 0)
 		SEND_JMSG_RETURN(400, "username already exists")
 	
 	// 生成(cuu,iuu,cxx,ixx)
 	string key = password + password;
-	generate_uuid_xx(cuu, cxx, key.c_str());
-	generate_uuid_xx(iuu, ixx, key.c_str());
+	generate_uuid_xxx(cuu, cxx, key.c_str());
+	generate_uuid_xxx(iuu, ixx, key.c_str());
 	
 	// 插入新用户
-	sprintf(regist_sql,
-		"insert into loginreq(username,cxx,ixx,cuu) values('%s','%s','%s','%s');",
+	SQL("insert into loginreq(username,cxx,ixx,cuu) values('%s','%s','%s','%s');",
 		username.c_str(), cxx, ixx, cuu);
-	if ( mysql_query(mys_conn, regist_sql) )
+	if ( MYS_QUERY )
 		SEND_JMSG_RETURN(400, "username already exists")
-	sprintf(regist_sql,
-		"insert into login(iuu) values('%s');",
-		iuu);
-	if ( mysql_query(mys_conn, regist_sql) )
-		SEND_JMSG_RETURN(500, "regist fail")
+	SQL("insert into login(iuu) values('%s');", iuu);
+	MYS_QUERY;
 	
 	send_jmsg(req, 200, "regist ok");
 }
 
 bool is_password_error(const string &password)
 {
-	int len = password.length();
-	if (len != 8)
+	if (password.length() != 8)
 		return true;
 	
+	char mask = 0;
 	const char *p = password.c_str();
-	while ( *p && ( !(*p<'0' || *p>'9') ) )
-		p++;
-	return *p != '\0';
+	while (*p)
+		mask |= password_check_map[*p++];
+	return (mask != 0x03);
 }
 
-void generate_uuid_xx(char *plain, char *cipher, const void *key)
+void generate_uuid_xxx(char *plain, char *cipher, const void *key)
 {
 	uuid_t uuid;
 	uuid_generate(uuid);
