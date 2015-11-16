@@ -11,8 +11,15 @@ create table loginreq (
 
 create table login (
 	iuu   char(36) NOT NULL,
-	uid   int NOT NULL AUTO_INCREMENT,
-	code  char(8),
+	uid   int NOT NULL auto_increment,
 	primary key (iuu),
 	key (uid)
+) default charset=latin1;
+
+create table idcheck (
+	id    unsigned int NOT NULL auto_increment,
+	uid   int NOT NULL,
+	code  char(8) NOT NULL,
+	time  datetime NOT NULL,
+	primary key (id)
 ) default charset=latin1;

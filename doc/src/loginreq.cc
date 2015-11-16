@@ -21,13 +21,17 @@ void loginreq(ngx_http_request_t *req, Document &doc)
 		SEND_JMSG_RETURN(400, "username format error")
 	
 	// 获取 cxx ixx
-	SQL("select cxx, ixx from loginreq where username='%s';",
+	SQL("select cxx, ixx from loginreq where username='%s'",
 		username.c_str());
 	MYS_QUERY;
 	MYSQL_RES *res = MYS_RESULT;
 	if (ret->row_count == 0)
-		SEND_JMSG_RETURN(400, "username doesn't exist")
+	{
+		MYS_FREE(res);
+		SEND_JMSG_RETURN(400, "username doesn't exist");
+	}
 	MYSQL_ROW row = MYS_NEXT_ROW(res);
+	MYS_FREE(res);
 	
 	// 返回
 	Document doc_out;

@@ -35,11 +35,13 @@ void regist(ngx_http_request_t *req, Document &doc)
 		SEND_JMSG_RETURN(400, "password format error")
 	
 	// 判断是否已注册过
-	SQL("select username from loginreq where username=('%s');",
+	SQL("select username from loginreq where username=('%s')",
 		username.c_str());
 	MYS_QUERY;
 	MYSQL_RES *res = MYS_RESULT;
-	if (res->row_count > 0)
+	int row_cnt = res->row_count;
+	MYS_FREE(res);
+	if (row_cnt > 0)
 		SEND_JMSG_RETURN(400, "username already exists")
 	
 	// 生成(cuu,iuu,cxx,ixx)
@@ -48,11 +50,11 @@ void regist(ngx_http_request_t *req, Document &doc)
 	generate_uuid_xxx(iuu, ixx, key.c_str());
 	
 	// 插入新用户
-	SQL("insert into loginreq(username,cxx,ixx,cuu) values('%s','%s','%s','%s');",
+	SQL("insert into loginreq(username,cxx,ixx,cuu) values('%s','%s','%s','%s')",
 		username.c_str(), cxx, ixx, cuu);
 	if ( MYS_QUERY )
 		SEND_JMSG_RETURN(400, "username already exists")
-	SQL("insert into login(iuu) values('%s');", iuu);
+	SQL("insert into login(iuu) values('%s')", iuu);
 	MYS_QUERY;
 	
 	send_jmsg(req, 200, "regist ok");

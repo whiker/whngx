@@ -12,6 +12,7 @@ using namespace whngx;
 namespace whdoc {
 
 
+char uid[16], id[16];
 char code[UUID_LEN+1];
 
 
@@ -31,42 +32,68 @@ void login(ngx_http_request_t *req, Document &doc)
 	if ( is_uuid_error(cuu) || is_uuid_error(iuu) )
 		SEND_JMSG_RETURN(400, "password error")
 	
-	// 比较 client发的cuu 和 正确的cuu
-	SQL("select cuu from loginreq where username='%s';",
+	// 查找 正确的cuu
+	SQL("select cuu from loginreq where username='%s'",
 		username.c_str());
 	MYS_QUERY;
 	MYSQL_RES *res = MYS_RESULT;
 	if (ret->row_count == 0)
+	{
+		MYS_FREE(res);
 		SEND_JMSG_RETURN(400, "username error")
+	}
+	
+	// 比较 client的cuu 和 正确的cuu
 	MYSQL_ROW row = MYS_NEXT_ROW(res);
 	if ( strncmp(cuu.c_str, row[0], UUID_LEN) != 0 )
+	{
+		MYS_FREE(res);
 		SEND_JMSG_RETURN(400, "password error")
+	}
+	MYS_FREE(res);
 	
 	// 获取 uid
-	SQL("select uid from login where iuu='%s';",
+	SQL("select uid from login where iuu='%s'",
 		iuu.c_str());
 	MYS_QUERY;
 	res = MYS_RESULT;
 	if (ret->row_count == 0)
+	{
+		MYS_FREE(res);
 		SEND_JMSG_RETURN(400, "password error")
+	}
 	row = MYS_NEXT_ROW(res);
+	strcpy(uid, row[0]);
+	MYS_FREE(res);
+	
+	// 随机验证码
+	UUID_STR(code)
+	code[8] = '\0';
+	
+	// 插入表-idcheck
+	MYS_SQLS;
+	SQL("insert into idcheck(uid, code) values('%s', '%s', now()); \
+		 select last_insert_id()",
+		uid, code);
+	MYS_QUERY;
+	res = MYS_RESULT;
+	row = MYS_NEXT_ROW(res);
+	strcpy(id, row[0]);
+	MYS_FREE(res);
+	MYS_UNSQLS;
 	
 	// 返回
 	Document doc_out;
 	doc_out.SetObject();
 	Value val;
-	val = StringRef(row[0]);
-	doc_out.AddMember("uid", val, doc_out.GetAllocator());
-	
-	// 随机验证码
-	UUID_STR(code)
-	code[8] = '\0';
-	SQL("update login set code='%s' where uid='%s';", code, row[0]);
-	MYS_QUERY;
+	val = StringRef(id);
+	doc_out.AddMember("id", val, doc_out.GetAllocator());
 	val = StringRef(code, 8);
 	doc_out.AddMember("code", val, doc_out.GetAllocator());
 	
 	send_json(req, 200, doc_out);
+	
+	// 更多安全考虑, 检查client IP
 }
 
 bool is_uuid_error(const string &uuid)
