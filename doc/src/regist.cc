@@ -1,10 +1,12 @@
-#include <ctype.h>
+#include <string.h>
+
 #include <uuid/uuid.h>
 
 #include "whngx_util.h"
 #include "global.h"
 #include "whdoc_util.h"
 #include "db_mysql.h"
+#include "tea_encrypt.h"
 
 using namespace std;
 using namespace rapidjson;
@@ -14,11 +16,12 @@ using namespace whngx;
 namespace whdoc {
 
 
+char key[16];
 char cuu[UUID_LEN+1],     iuu[UUID_LEN+1];
 char cxx[UUID_XXX_LEN+1], ixx[UUID_XXX_LEN+1];
 
 
-bool is_password_error(const string &password);
+bool is_password_error(const char *password);
 void generate_uuid_xxx(char *plain, char *cipher, const void *key);
 
 
@@ -26,8 +29,8 @@ void generate_uuid_xxx(char *plain, char *cipher, const void *key);
 void regist(ngx_http_request_t *req, Document &doc)
 {
 	JSON_CHECK(regist)
-	const string &username = doc["username"];
-	const string &password = doc["password"];
+	const char *username = doc["username"].GetString();
+	const char *password = doc["password"].GetString();
 	
 	if ( is_username_error(username) )
 		SEND_JMSG_RETURN(400, "username format error")
@@ -36,7 +39,7 @@ void regist(ngx_http_request_t *req, Document &doc)
 	
 	// 判断是否已注册过
 	SQL("select username from loginreq where username=('%s')",
-		username.c_str());
+		username);
 	MYS_QUERY;
 	MYSQL_RES *res = MYS_RESULT;
 	int row_cnt = res->row_count;
@@ -45,13 +48,14 @@ void regist(ngx_http_request_t *req, Document &doc)
 		SEND_JMSG_RETURN(400, "username already exists")
 	
 	// 生成(cuu,iuu,cxx,ixx)
-	string key = password + password;
-	generate_uuid_xxx(cuu, cxx, key.c_str());
-	generate_uuid_xxx(iuu, ixx, key.c_str());
+	memcpy(key, password, 8);
+	memcpy(key+8, password, 8);
+	generate_uuid_xxx(cuu, cxx, key);
+	generate_uuid_xxx(iuu, ixx, key);
 	
 	// 插入新用户
 	SQL("insert into loginreq(username,cxx,ixx,cuu) values('%s','%s','%s','%s')",
-		username.c_str(), cxx, ixx, cuu);
+		username, cxx, ixx, cuu);
 	if ( MYS_QUERY )
 		SEND_JMSG_RETURN(400, "username already exists")
 	SQL("insert into login(iuu) values('%s')", iuu);
@@ -60,16 +64,16 @@ void regist(ngx_http_request_t *req, Document &doc)
 	send_jmsg(req, 200, "regist ok. warnning: if you forget password, we forget you.");
 }
 
-bool is_password_error(const string &password)
+bool is_password_error(const char *password)
 {
-	if (password.length() != 8)
-		return true;
-	
+	const char *p = password;
 	char mask = 0;
-	const char *p = password.c_str();
-	while (*p)
-		mask |= password_check_map[*p++];
-	return (mask != 0x03);
+	int i = 0;
+	
+	for (; *p && i < 8; p++, i++)
+		mask |= password_check_map[(int)*p];
+	
+	return (*p || i != 8 || mask != 0x05);
 }
 
 void generate_uuid_xxx(char *plain, char *cipher, const void *key)

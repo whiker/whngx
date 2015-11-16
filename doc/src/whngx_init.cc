@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include "whngx_util.h"
+#include "db_mysql.h"
 
 using namespace std;
 using namespace whngx;
@@ -13,8 +14,6 @@ vector<JcheckPair> login_params;
 char password_check_map[128];
 char uuid_check_map[128];
 
-
-extern int whdoc::init_db_mysql();
 
 static void init_json_check_params();
 static void init_check_map();

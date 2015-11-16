@@ -22,6 +22,9 @@ extern MYSQL *mys_conn;
 extern char sql_str[1024];
 
 
+int init_db_mysql();
+
+
 } // namespace
 
 #endif

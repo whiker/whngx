@@ -51,7 +51,7 @@ sudo apt-get install uuid-dev
 ./configure --add-module=whngx/doc/src
 
 CXX = g++ -Iwhngx/doc/ext -Iwhngx/doc/include
-LINK =	$(CXX)  // 加-lmysqlclient -luuid
+LINK =	$(CXX)  ## -lmysqlclient -luuid
 
 
 // 功能处理流程

@@ -1,5 +1,4 @@
 #include <ctype.h>
-#include <string>
 
 using namespace std;
 
@@ -7,16 +6,14 @@ using namespace std;
 namespace whdoc {
 
 
-bool is_username_error(const string &username)
+bool is_username_error(const char *username)
 {
-	int len = username.length();
-	if (len < 4 || len > 8)
-		return true;
+	const char *p = username;
+	int i = 0;
 	
-	const char *p = username.c_str();
-	while ( *p && isalpha(*p) )
-		p++;
-	return *p != '\0';
+	for (; *p && i < 8 && isalpha(*p); p++, i++);
+	
+	return (*p || i<4);
 }
 
 

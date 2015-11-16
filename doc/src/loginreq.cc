@@ -15,17 +15,17 @@ namespace whdoc {
 void loginreq(ngx_http_request_t *req, Document &doc)
 {
 	JSON_CHECK(loginreq);
-	const string &username = doc["username"];
+	const char *username = doc["username"].GetString();
 	
 	if ( is_username_error(username) )
 		SEND_JMSG_RETURN(400, "username format error")
 	
 	// 获取 cxx ixx
 	SQL("select cxx, ixx from loginreq where username='%s'",
-		username.c_str());
+		username);
 	MYS_QUERY;
 	MYSQL_RES *res = MYS_RESULT;
-	if (ret->row_count == 0)
+	if (res->row_count == 0)
 	{
 		MYS_FREE(res);
 		SEND_JMSG_RETURN(400, "username doesn't exist");

@@ -4,9 +4,9 @@
 namespace whdoc {
 
 
-ngx_int_t regist(ngx_http_request_t *req, Document &doc);
-ngx_int_t loginreq(ngx_http_request_t *req, Document &doc);
-ngx_int_t login(ngx_http_request_t *req, Document &doc);
+ngx_int_t regist(ngx_http_request_t *req, rapidjson::Document &doc);
+ngx_int_t loginreq(ngx_http_request_t *req, rapidjson::Document &doc);
+ngx_int_t login(ngx_http_request_t *req, rapidjson::Document &doc);
 
 
 }  // namespace

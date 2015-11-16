@@ -2,6 +2,7 @@
 
 #include "whngx_util.h"
 #include "global.h"
+#include "whdoc_util.h"
 #include "db_mysql.h"
 
 using namespace std;
@@ -16,16 +17,16 @@ char uid[16], id[16];
 char code[UUID_LEN+1];
 
 
-bool is_uuid_error(const string &uuid);
+bool is_uuid_error(const char *uuid);
 
 
 // ACTION
 void login(ngx_http_request_t *req, Document &doc)
 {
 	JSON_CHECK(login);
-	const string &username = doc["username"];
-	const string &cuu      = doc["cuu"];
-	const string &iuu      = doc["iuu"];
+	const char *username = doc["username"].GetString();
+	const char *cuu      = doc["cuu"].GetString();
+	const char *iuu      = doc["iuu"].GetString();
 	
 	if ( is_username_error(username) )
 		SEND_JMSG_RETURN(400, "username format error")
@@ -34,10 +35,10 @@ void login(ngx_http_request_t *req, Document &doc)
 	
 	// 查找 正确的cuu
 	SQL("select cuu from loginreq where username='%s'",
-		username.c_str());
+		username);
 	MYS_QUERY;
 	MYSQL_RES *res = MYS_RESULT;
-	if (ret->row_count == 0)
+	if (res->row_count == 0)
 	{
 		MYS_FREE(res);
 		SEND_JMSG_RETURN(400, "username error")
@@ -45,7 +46,7 @@ void login(ngx_http_request_t *req, Document &doc)
 	
 	// 比较 client的cuu 和 正确的cuu
 	MYSQL_ROW row = MYS_NEXT_ROW(res);
-	if ( strncmp(cuu.c_str, row[0], UUID_LEN) != 0 )
+	if ( strncmp(cuu, row[0], UUID_LEN) != 0 )
 	{
 		MYS_FREE(res);
 		SEND_JMSG_RETURN(400, "password error")
@@ -54,10 +55,10 @@ void login(ngx_http_request_t *req, Document &doc)
 	
 	// 获取 uid
 	SQL("select uid from login where iuu='%s'",
-		iuu.c_str());
+		iuu);
 	MYS_QUERY;
 	res = MYS_RESULT;
-	if (ret->row_count == 0)
+	if (res->row_count == 0)
 	{
 		MYS_FREE(res);
 		SEND_JMSG_RETURN(400, "password error")
@@ -80,7 +81,7 @@ void login(ngx_http_request_t *req, Document &doc)
 	row = MYS_NEXT_ROW(res);
 	strcpy(id, row[0]);
 	MYS_FREE(res);
-	MYS_UNSQLS;
+	MYS_UN_SQLS;
 	
 	// 返回
 	Document doc_out;
@@ -96,16 +97,16 @@ void login(ngx_http_request_t *req, Document &doc)
 	// 更多安全考虑, 检查client IP
 }
 
-bool is_uuid_error(const string &uuid)
+bool is_uuid_error(const char *uuid)
 {
-	if (uuid.length() != UUID_LEN)
-		return true;
-	
+	const char *p = uuid;
 	char mask = 0;
-	const char *p = uuid.c_str();
-	while (*p)
-		mask |= uuid[*p++];
-	return (mask != 0x05);
+	int i = 0;
+	
+	for (; *p && i < UUID_LEN; p++, i++)
+		mask |= uuid_check_map[(int)*p];
+	
+	return (*p || i != UUID_LEN || mask != 0x05);
 }
 
 
