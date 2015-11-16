@@ -52,3 +52,25 @@ sudo apt-get install uuid-dev
 
 CXX = g++ -Iwhngx/doc/ext -Iwhngx/doc/include
 LINK =	$(CXX)  // 加-lmysqlclient -luuid
+
+
+// 功能处理流程
+1. regist
+	C (username, password)=> S
+	S (username, cxx, ixx, cuu)=>loginreq
+	  (iuu, uid)=>login
+	S (ok)=> C
+
+2. loginreq
+	C (username)=> S
+	S (cxx, ixx)=> C
+
+3. login
+	C (username, cuu1, iuu1)=> S
+	S check cuu1==cuu; then get uid
+	S generate random code; then (id, uid, code, now_time)=>idcheck
+	S (id, code)=> C
+
+4. check-id
+	select uid from idcheck
+		where id='id' and code='code' and time_to_sec(now())-time_to_sec(time)<3600

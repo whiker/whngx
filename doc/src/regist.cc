@@ -57,7 +57,7 @@ void regist(ngx_http_request_t *req, Document &doc)
 	SQL("insert into login(iuu) values('%s')", iuu);
 	MYS_QUERY;
 	
-	send_jmsg(req, 200, "regist ok");
+	send_jmsg(req, 200, "regist ok. warnning: if you forget password, we forget you.");
 }
 
 bool is_password_error(const string &password)
