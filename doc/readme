@@ -1,3 +1,4 @@
+-------------------------------------------------------------------------------
 // 代码结构
 ngx_http_doc_module.cc {
 	
@@ -12,10 +13,12 @@ ngx_http_doc_module.cc {
 		regist.cc       // 注册
 		loginreq.cc     // 登录请求
 		login.cc        // 登录
+		list_doc.cc     // 文档列表
 	}
 }
 
 
+-------------------------------------------------------------------------------
 // 配置文件
 		location = /doc/regist {
 			doc;
@@ -40,8 +43,17 @@ ngx_http_doc_module.cc {
 			}
 			client_max_body_size 1k;
 		}
+		
+		location = /doc/list_doc {
+			doc;
+			limit_except POST {
+				deny all;
+			}
+			client_max_body_size 1k;
+		}
 
 
+-------------------------------------------------------------------------------
 // 构建和安装
 sudo apt-get install mysql-server
 sudo apt-get install mysql-client
@@ -53,7 +65,13 @@ sudo apt-get install uuid-dev
 CXX = g++ -Iwhngx/doc/ext -Iwhngx/doc/include
 LINK =	$(CXX)  ## -lmysqlclient -luuid
 
+在文件conf/make, 第396行, 改"\$(CC)"成"\$(CXX)"
+# the addons sources
+if test -n "$NGX_ADDON_SRCS"; then
+    ngx_cc="\$(CXX) $ngx_compile_opt \$(CFLAGS) $ngx_use_pch \$(ALL_INCS)"
 
+
+-------------------------------------------------------------------------------
 // 功能处理流程
 1. regist
 	C (username, password)=> S

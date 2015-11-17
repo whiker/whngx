@@ -10,4 +10,5 @@ NGX_ADDON_SRCS="$NGX_ADDON_SRCS \
 				$ngx_addon_dir/whdoc_util.cc \
 				$ngx_addon_dir/regist.cc \
 				$ngx_addon_dir/loginreq.cc \
-				$ngx_addon_dir/login.cc"
+				$ngx_addon_dir/login.cc \
+				$ngx_addon_dir/list_doc.cc"

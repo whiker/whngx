@@ -16,13 +16,17 @@
 namespace whngx {
 
 
+// uuid
 #define UUID_STR(STR) \
 	{ uuid_t uuid; uuid_generate(uuid); uuid_unparse(uuid, STR); }
 
+// 发送json格式消息
 #define SEND_JMSG_RETURN(STATUS, MSG) \
 	{ send_jmsg(req, STATUS, MSG); return; }
 
+// json
 #define JSON_TYPE_STR 1
+#define JSON_TYPE_INT 2
 
 #define JSON_CHECK(ITEMS) \
 	string err_str; \

@@ -13,7 +13,7 @@ using namespace whngx;
 namespace whdoc {
 
 
-char uid[16], id[16];
+char id[16];
 char code[UUID_LEN+1];
 
 
@@ -54,8 +54,7 @@ void login(ngx_http_request_t *req, Document &doc)
 	MYS_FREE(res);
 	
 	// 获取 uid
-	SQL("select uid from login where iuu='%s'",
-		iuu);
+	SQL("select uid from login where iuu='%s'", iuu);
 	MYS_QUERY;
 	res = MYS_RESULT;
 	if (res->row_count == 0)

@@ -58,7 +58,10 @@ int json_check(Document &doc, vector<JcheckPair> &items, string &err_str)
 		switch (it->second)
 		{
 		case JSON_TYPE_STR:
-			is_type_err = !doc[it->first.c_str()].IsString();
+			is_type_err = ! doc[it->first.c_str()].IsString();
+			break;
+		case JSON_TYPE_INT:
+			is_type_err = ! doc[it->first.c_str()].IsInt();
 			break;
 		}
 		if (is_type_err)

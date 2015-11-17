@@ -11,6 +11,14 @@ using namespace whngx;
 using namespace whdoc;
 
 
+#define URI_IF(URI) \
+	if ( ngx_strncmp(req->uri.data+5, URI, req->uri.len-5)==0 )
+#define URI_EIF(URI) \
+	else if ( ngx_strncmp(req->uri.data+5, URI, req->uri.len-5)==0 )
+#define URI_ELSE \
+	else
+
+
 static void wh_handle_body(ngx_http_request_t *req);
 
 
@@ -47,10 +55,8 @@ void wh_handle_body(ngx_http_request_t *req)
 	}
 	
 	// 调用 Action 处理函数
-	if ( ngx_strncmp(req->uri.data, "/doc/regist", req->uri.len) == 0 )
-		regist(req, doc);
-	else if ( ngx_strncmp(req->uri.data, "/doc/loginreq", req->uri.len) == 0 )
-		loginreq(req, doc);
-	else
-		login(req, doc);
+	URI_IF("list_doc")    list_doc(req, doc);
+	URI_EIF("loginreq")   loginreq(req, doc);
+	URI_EIF("login")      login(req, doc);
+	URI_ELSE              regist(req, doc);
 }

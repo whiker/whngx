@@ -23,3 +23,11 @@ create table idcheck (
 	time  datetime NOT NULL,
 	primary key (id)
 ) default charset=latin1;
+
+/*
+create table u123(
+	docname  varchar(64) NOT NULL,
+	docid    int NOT NULL auto_increment,
+	primary key (docname),
+	key (docid)
+) default charset=utf8;

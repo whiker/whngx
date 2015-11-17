@@ -17,7 +17,7 @@ namespace whdoc {
 
 
 char key[16];
-char cuu[UUID_LEN+1],     iuu[UUID_LEN+1];
+char cuu[UUID_LEN+1], iuu[UUID_LEN+1];
 char cxx[UUID_XXX_LEN+1], ixx[UUID_XXX_LEN+1];
 
 
@@ -58,7 +58,23 @@ void regist(ngx_http_request_t *req, Document &doc)
 		username, cxx, ixx, cuu);
 	if ( MYS_QUERY )
 		SEND_JMSG_RETURN(400, "username already exists")
+	
 	SQL("insert into login(iuu) values('%s')", iuu);
+	MYS_QUERY;
+	
+	SQL("select uid from login where iuu='%s'", iuu);
+	MYS_QUERY;
+	res = MYS_RESULT;
+	MYSQL_ROW row = MYS_NEXT_ROW(res);
+	strcpy(uid, row[0]);
+	MYS_FREE(res);
+	
+	SQL("create table u%s ( \
+			docname varchar(64) NOT NULL, \
+			docid int NOT NULL auto_increment, \
+			primary key (docname), key (docid) \
+		) default charset=utf8;",
+		uid);
 	MYS_QUERY;
 	
 	send_jmsg(req, 200, "regist ok. warnning: if you forget password, we forget you.");

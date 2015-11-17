@@ -10,9 +10,12 @@ using namespace whngx;
 vector<JcheckPair> regist_params;
 vector<JcheckPair> loginreq_params;
 vector<JcheckPair> login_params;
+vector<JcheckPair> checkid_params;
 
 char password_check_map[128];
 char uuid_check_map[128];
+
+char uid[16];
 
 
 static void init_json_check_params();
@@ -45,6 +48,10 @@ void init_json_check_params()
 	login_params.push_back(JcheckPair("username", JSON_TYPE_STR));
 	login_params.push_back(JcheckPair("cuu", JSON_TYPE_STR));
 	login_params.push_back(JcheckPair("iuu", JSON_TYPE_STR));
+	
+	// checkid
+	checkid_params.push_back(JcheckPair("id", JSON_TYPE_INT));
+	checkid_params.push_back(JcheckPair("code", JSON_TYPE_STR));
 }
 
 void init_check_map()
