@@ -34,7 +34,6 @@ void open_doc(ngx_http_request_t *req, Document &doc)
 		strcpy(docid, row[0]);
 	}
 	MYS_FREE(res);
-	
 	if (res_cnt == 0)
 		SEND_JMSG_RETURN(400, "doc not exist")
 	

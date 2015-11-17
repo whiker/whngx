@@ -40,16 +40,21 @@ void delete_doc(ngx_http_request_t *req, Document &doc)
 	// 从 docl_UID 移到 docd_UID
 	if (res_cnt > 0)
 	{
-		SQL("delete from docl_%s where docid='%s'",
-			uid, docid);
+		SQL("delete from docl_%s where docname='%s'",
+			uid, docname);
 		MYS_QUERY;
 		
 		SQL("insert into docd_%s values('%s', '%s')",
 			uid, docname, docid);
-		MYS_QUERY;
+		if ( MYS_QUERY )
+		{
+			SQL("update docd_%s set docid='%s' where docname='%s'",
+				uid, docid, docname);
+			MYS_QUERY;
+		}
 	}
 	
-	send_jmsg(req, 200, "delete doc ok");
+	send_jmsg(req, 200, "delete doc done");
 }
 
 
