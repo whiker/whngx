@@ -12,11 +12,14 @@ using namespace whdoc;
 
 
 #define URI_IF(URI) \
-	if ( ngx_strncmp(req->uri.data+5, URI, req->uri.len-5)==0 )
+	if ( ngx_strncmp(req->uri.data+5, "URI", req->uri.len-5)==0 ) \
+		URI(req, doc);
 #define URI_EIF(URI) \
-	else if ( ngx_strncmp(req->uri.data+5, URI, req->uri.len-5)==0 )
-#define URI_ELSE \
-	else
+	else if ( ngx_strncmp(req->uri.data+5, "URI", req->uri.len-5)==0 ) \
+		URI(req, doc);
+#define URI_ELSE(URI) \
+	else \
+		URI(req, doc);
 
 
 static void wh_handle_body(ngx_http_request_t *req);
@@ -55,8 +58,13 @@ void wh_handle_body(ngx_http_request_t *req)
 	}
 	
 	// 调用 Action 处理函数
-	URI_IF("list_doc")    list_doc(req, doc);
-	URI_EIF("loginreq")   loginreq(req, doc);
-	URI_EIF("login")      login(req, doc);
-	URI_ELSE              regist(req, doc);
+	URI_IF(list_doc)
+	URI_EIF(open_doc)
+	URI_EIF(create_doc)
+	URI_EIF(rename_doc)
+	URI_EIF(delete_doc)
+	URI_EIF(restore_doc)
+	URI_EIF(loginreq)
+	URI_EIF(login)
+	URI_ELSE(regist)
 }

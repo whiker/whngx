@@ -4,7 +4,7 @@
 namespace whdoc {
 
 
-#define ID_CHECK(UID) \
+#define CHECK_ID_TO_GET_UID(UID) \
 	string err_str; \
 	if ( check_id(doc, UID, err_str) < -1 ) { \
 		send_jmsg(req, 400, err_str.c_str()); \

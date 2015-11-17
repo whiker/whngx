@@ -69,9 +69,19 @@ void regist(ngx_http_request_t *req, Document &doc)
 	strcpy(uid, row[0]);
 	MYS_FREE(res);
 	
-	SQL("create table u%s ( \
-			docname varchar(64) NOT NULL, \
-			docid int NOT NULL auto_increment, \
+	// 创建-存在的文档表
+	SQL("create table docl_%s ( \
+			docname varchar(64) not null, \
+			docid int not null auto_increment, \
+			primary key (docname), key (docid) \
+		) default charset=utf8;",
+		uid);
+	MYS_QUERY;
+	
+	// 创建-删除的文档表
+	SQL("create table docd_%s ( \
+			docname varchar(64) not null, \
+			docid int not null, \
 			primary key (docname), key (docid) \
 		) default charset=utf8;",
 		uid);

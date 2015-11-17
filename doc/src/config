@@ -11,4 +11,9 @@ NGX_ADDON_SRCS="$NGX_ADDON_SRCS \
 				$ngx_addon_dir/regist.cc \
 				$ngx_addon_dir/loginreq.cc \
 				$ngx_addon_dir/login.cc \
-				$ngx_addon_dir/list_doc.cc"
+				$ngx_addon_dir/list_doc.cc \
+				$ngx_addon_dir/create_doc.cc \
+				$ngx_addon_dir/delete_doc.cc \
+				$ngx_addon_dir/open_doc.cc \
+				$ngx_addon_dir/restore_doc.cc \
+				$ngx_addon_dir/rename_doc.cc"

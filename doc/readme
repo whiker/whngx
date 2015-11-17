@@ -14,6 +14,11 @@ ngx_http_doc_module.cc {
 		loginreq.cc     // 登录请求
 		login.cc        // 登录
 		list_doc.cc     // 文档列表
+		create_doc.cc   // 创建文档
+		delete_doc.cc   // 删除文档
+		open_doc.cc     // 打开文档
+		restore_doc.cc  // 恢复文档
+		rename_doc.cc   // 文档重命名
 	}
 }
 
@@ -22,33 +27,47 @@ ngx_http_doc_module.cc {
 // 配置文件
 		location = /doc/regist {
 			doc;
-			limit_except POST {
-				deny all;
-			}
+			limit_except POST { deny all; }
 			client_max_body_size 1k;
 		}
-		
 		location = /doc/loginreq {
 			doc;
-			limit_except POST {
-				deny all;
-			}
+			limit_except POST { deny all; }
 			client_max_body_size 1k;
 		}
-		
 		location = /doc/login {
 			doc;
-			limit_except POST {
-				deny all;
-			}
+			limit_except POST { deny all; }
 			client_max_body_size 1k;
 		}
-		
 		location = /doc/list_doc {
 			doc;
-			limit_except POST {
-				deny all;
-			}
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
+		location = /doc/create_doc {
+			doc;
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
+		location = /doc/delete_doc {
+			doc;
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
+		location = /doc/open_doc {
+			doc;
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
+		location = /doc/restore_doc {
+			doc;
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
+		location = /doc/rename_doc {
+			doc;
+			limit_except POST { deny all; }
 			client_max_body_size 1k;
 		}
 
@@ -65,7 +84,7 @@ sudo apt-get install uuid-dev
 CXX = g++ -Iwhngx/doc/ext -Iwhngx/doc/include
 LINK =	$(CXX)  ## -lmysqlclient -luuid
 
-在文件conf/make, 第396行, 改"\$(CC)"成"\$(CXX)"
+在文件conf/make, 第395行, 改"\$(CC)"成"\$(CXX)"
 # the addons sources
 if test -n "$NGX_ADDON_SRCS"; then
     ngx_cc="\$(CXX) $ngx_compile_opt \$(CFLAGS) $ngx_use_pch \$(ALL_INCS)"
@@ -73,22 +92,30 @@ if test -n "$NGX_ADDON_SRCS"; then
 
 -------------------------------------------------------------------------------
 // 功能处理流程
-1. regist
+01. regist
 	C (username, password)=> S
 	S (username, cxx, ixx, cuu)=>loginreq
 	  (iuu, uid)=>login
+	  create table doclUID, docdUID
 	S (ok)=> C
 
-2. loginreq
+02. loginreq
 	C (username)=> S
 	S (cxx, ixx)=> C
 
-3. login
+03. login
 	C (username, cuu1, iuu1)=> S
-	S check cuu1==cuu; then get uid
+	S check cuu1==cuu; then get uid from login
 	S generate random code; then (id, uid, code, now_time)=>idcheck
 	S (id, code)=> C
 
-4. check-id
+04. check-id
 	select uid from idcheck
 		where id='id' and code='code' and time_to_sec(now())-time_to_sec(time)<3600
+
+05. list_doc
+06. create_doc
+07. delete_doc
+08. open_doc
+09. restore_doc
+10. rename_doc
