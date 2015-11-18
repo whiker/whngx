@@ -74,7 +74,7 @@ void regist(ngx_http_request_t *req, Document &doc)
 			docname varchar(64) not null, \
 			docid int not null auto_increment, \
 			primary key (docname), key (docid) \
-		) default charset=utf8;",
+		) default charset=utf8",
 		uid);
 	MYS_QUERY;
 	
@@ -83,7 +83,7 @@ void regist(ngx_http_request_t *req, Document &doc)
 			docname varchar(64) not null, \
 			docid int not null, \
 			primary key (docname), key (docid) \
-		) default charset=utf8;",
+		) default charset=utf8",
 		uid);
 	MYS_QUERY;
 	

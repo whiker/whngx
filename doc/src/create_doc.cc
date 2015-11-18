@@ -21,12 +21,34 @@ void create_doc(ngx_http_request_t *req, Document &doc)
 	
 	const char *docname = doc["docname"].GetString();
 	
-	SQL("insert into docl_%s(docname) values('%s')",
+	// 向 docl_%s 插入新行
+	MYS_SQLS;
+	SQL("insert into docl_%s(docname) values('%s'); \
+		 select last_insert_id()",
 		uid, docname);
 	if ( MYS_QUERY )
-		SEND_JMSG_RETURN(400, "doc already exists")
-	else
-		SEND_JMSG_RETURN(200, "create doc ok")
+	{
+		MYS_UN_SQLS;
+		send_jmsg(req, 400, "doc already exists");
+		return;
+	}
+	// 获取新docid
+	res = MYS_RESULT;
+	row = MYS_NEXT_ROW(res);
+	strcpy(docid, row[0]);
+	MYS_FREE(res);
+	MYS_UN_SQLS;
+	
+	// 创建文档表
+	SQL("create table doc_%s_%s ( \
+			noteid int auto_increment, \
+			note varchar() not null, \
+			primary key (noteid) \
+		) default charset=utf8",
+		uid, docid);
+	MYS_QUERY;
+	
+	send_jmsg(req, 200, "create doc done");
 }
 
 

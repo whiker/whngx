@@ -119,3 +119,8 @@ if test -n "$NGX_ADDON_SRCS"; then
 08. open_doc
 09. restore_doc
 10. rename_doc
+11. scan_doc
+
+12. add_note
+13. delete_note
+14. modify_note

@@ -13,6 +13,7 @@ namespace whdoc {
 
 
 bool is_username_error(const char *username);
+
 int  check_id(rapidjson::Document &doc, char *uid, std::string &err_str);
 
 
