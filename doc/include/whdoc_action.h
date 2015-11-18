@@ -22,6 +22,13 @@ void restore_doc(ngx_http_request_t *req, rapidjson::Document &doc);
 
 void rename_doc(ngx_http_request_t *req, rapidjson::Document &doc);
 
+void scan_doc(ngx_http_request_t *req, rapidjson::Document &doc);
+
+void add_note(ngx_http_request_t *req, rapidjson::Document &doc);
+
+void delete_note(ngx_http_request_t *req, rapidjson::Document &doc);
+
+void modify_note(ngx_http_request_t *req, rapidjson::Document &doc);
 
 }  // namespace
 

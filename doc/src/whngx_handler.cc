@@ -58,8 +58,12 @@ void wh_handle_body(ngx_http_request_t *req)
 	}
 	
 	// 调用 Action 处理函数
-	URI_IF(list_doc)
+	URI_IF(scan_doc)
+	URI_EIF(modify_note)
+	URI_EIF(list_doc)
 	URI_EIF(open_doc)
+	URI_EIF(add_note)
+	URI_EIF(delete_note)
 	URI_EIF(create_doc)
 	URI_EIF(rename_doc)
 	URI_EIF(delete_doc)

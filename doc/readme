@@ -13,12 +13,18 @@ ngx_http_doc_module.cc {
 		regist.cc       // 注册
 		loginreq.cc     // 登录请求
 		login.cc        // 登录
+		
 		list_doc.cc     // 文档列表
 		create_doc.cc   // 创建文档
 		delete_doc.cc   // 删除文档
 		open_doc.cc     // 打开文档
 		restore_doc.cc  // 恢复文档
 		rename_doc.cc   // 文档重命名
+		scan_doc.cc     // 浏览文档
+		
+		add_note.cc     // 增加记录
+		delete_note.cc  // 删除记录
+		modify_note.cc  // 修改记录
 	}
 }
 
@@ -70,6 +76,26 @@ ngx_http_doc_module.cc {
 			limit_except POST { deny all; }
 			client_max_body_size 1k;
 		}
+		location = /doc/scan_doc {
+			doc;
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
+		location = /doc/add_note {
+			doc;
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
+		location = /doc/delete_note {
+			doc;
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
+		location = /doc/modify_note {
+			doc;
+			limit_except POST { deny all; }
+			client_max_body_size 1k;
+		}
 
 
 -------------------------------------------------------------------------------
@@ -116,10 +142,10 @@ if test -n "$NGX_ADDON_SRCS"; then
 05. list_doc
 06. create_doc
 07. delete_doc
-08. open_doc
+08. open_doc     设置当前打开的文档
 09. restore_doc
 10. rename_doc
-11. scan_doc
+11. scan_doc     from_note_index to_note_index
 
 12. add_note
 13. delete_note

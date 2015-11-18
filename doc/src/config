@@ -16,4 +16,8 @@ NGX_ADDON_SRCS="$NGX_ADDON_SRCS \
 				$ngx_addon_dir/delete_doc.cc \
 				$ngx_addon_dir/open_doc.cc \
 				$ngx_addon_dir/restore_doc.cc \
-				$ngx_addon_dir/rename_doc.cc"
+				$ngx_addon_dir/rename_doc.cc \
+				$ngx_addon_dir/scan_doc.cc \
+				$ngx_addon_dir/add_note.cc \
+				$ngx_addon_dir/delete_note.cc \
+				$ngx_addon_dir/modify_note.cc"

@@ -33,8 +33,8 @@ void create_doc(ngx_http_request_t *req, Document &doc)
 		return;
 	}
 	// 获取新docid
-	res = MYS_RESULT;
-	row = MYS_NEXT_ROW(res);
+	MYSQL_RES *res = MYS_RESULT;
+	MYSQL_ROW row = MYS_NEXT_ROW(res);
 	strcpy(docid, row[0]);
 	MYS_FREE(res);
 	MYS_UN_SQLS;
