@@ -15,7 +15,7 @@ vector<JcheckPair> checkid_params;
 char password_check_map[128];
 char uuid_check_map[128];
 
-char uid[16], docid[16];
+char uid[16], docid[16], noteid[16];
 
 
 static void init_json_check_params();

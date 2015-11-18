@@ -30,10 +30,14 @@ void list_doc(ngx_http_request_t *req, Document &doc)
 		val = StringRef(row[0]);
 		arr.PushBack(val, doc_alloc);
 	}
+	doc_out.AddMember("docs", arr, doc_alloc);
+	
+	StringBuffer jbuf;
+	Writer<StringBuffer> jw(jbuf);
+	doc.Accept(jw);
 	MYS_FREE(res);
 	
-	doc_out.AddMember("docs", arr, doc_alloc);
-	send_json(req, 200, doc_out);
+	send_jbuf(req, 200, jbuf);
 }
 
 

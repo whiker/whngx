@@ -38,6 +38,8 @@ namespace whngx {
 typedef std::pair<std::string, int> JcheckPair;
 
 
+ngx_int_t send_jbuf(ngx_http_request_t *req, int status, rapidjson::StringBuffer &jbuf);
+
 ngx_int_t send_json(ngx_http_request_t *req, int status, rapidjson::Document &doc);
 
 ngx_int_t send_jmsg(ngx_http_request_t *req, int status, const char *msg);

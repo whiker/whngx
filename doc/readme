@@ -145,7 +145,7 @@ if test -n "$NGX_ADDON_SRCS"; then
 08. open_doc     设置当前打开的文档
 09. restore_doc
 10. rename_doc
-11. scan_doc     from_note_index to_note_index
+11. scan_doc     from_noteid note_num
 
 12. add_note
 13. delete_note

@@ -42,13 +42,20 @@ void create_doc(ngx_http_request_t *req, Document &doc)
 	// 创建文档表
 	SQL("create table doc_%s_%s ( \
 			noteid int auto_increment, \
-			note varchar() not null, \
+			content text not null, \
 			primary key (noteid) \
 		) default charset=utf8",
 		uid, docid);
 	MYS_QUERY;
 	
-	send_jmsg(req, 200, "create doc done");
+	// 返回新docid
+	Document doc_out;
+	doc_out.SetObject();
+	Value val;
+	val = StringRef(docid);
+	doc_out.AddMember("docid", val, doc_out.GetAllocator());
+	
+	send_json(req, 200, doc_out);
 }
 
 

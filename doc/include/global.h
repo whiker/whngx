@@ -16,6 +16,6 @@ extern std::vector<whngx::JcheckPair> checkid_params;
 extern char password_check_map[128];
 extern char uuid_check_map[128];
 
-extern char uid[16], docid[16];
+extern char uid[16], docid[16], noteid[16];
 
 #endif

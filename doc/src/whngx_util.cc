@@ -7,12 +7,8 @@ using namespace rapidjson;
 namespace whngx {
 
 
-ngx_int_t send_json(ngx_http_request_t *req, int status, Document &doc)
+ngx_int_t send_jbuf(ngx_http_request_t *req, int status, StringBuffer &jbuf)
 {
-	StringBuffer jbuf;
-	Writer<StringBuffer> jw(jbuf);
-	doc.Accept(jw);
-	
 	string jstr = jbuf.GetString();
 	int jlen = jstr.length();
 	
@@ -23,12 +19,21 @@ ngx_int_t send_json(ngx_http_request_t *req, int status, Document &doc)
 		return ret;
 	
 	ngx_buf_t *buf = (ngx_buf_t*) ngx_pcalloc(req->pool, sizeof(ngx_buf_t));
-	buf->start = buf->pos = (u_char*) jstr.c_str();
+	buf->start = buf->pos = (u_char*) ngx_palloc(req->pool, jlen);
+	memcpy(buf->pos, jstr.c_str(), jlen);
 	buf->end = buf->last = buf->pos + jlen;
 	buf->temporary = buf->last_buf = 1;
 	
 	ngx_chain_t out = { buf, NULL };
 	return ngx_http_output_filter(req, &out);
+}
+
+ngx_int_t send_json(ngx_http_request_t *req, int status, Document &doc)
+{
+	StringBuffer jbuf;
+	Writer<StringBuffer> jw(jbuf);
+	doc.Accept(jw);
+	return send_jbuf(req, status, jbuf);
 }
 
 ngx_int_t send_jmsg(ngx_http_request_t *req, int status, const char *msg)
